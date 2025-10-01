@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Shipment;
+use App\ShipmentStatusEnum;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,7 +16,7 @@ return new class extends Migration
         Schema::create('shipments', function (Blueprint $table) {
             $table->id();
             $table->string('tracking_number')->unique();
-            $table->string('status')->default('in_progress');
+            $table->enum('status', ShipmentStatusEnum::getValues())->default(ShipmentStatusEnum::IN_PROGRESS->value);
             $table->timestamp('last_status_check')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->timestamps();
