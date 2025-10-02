@@ -6,7 +6,15 @@ use App\Models\Shipment;
 
 interface ShipmentServiceInterface
 {
+    /**
+     * @param Shipment $shipment
+     * @param array $attributes
+     * @return void
+     */
     public function update(Shipment $shipment, array $attributes): void;
 
-    public function updateInProgressShipments();
+    /**
+     * @return mixed
+     */
+    public function updateInProgressShipments(): mixed;
 }
