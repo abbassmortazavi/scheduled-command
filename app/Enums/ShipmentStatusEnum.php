@@ -18,6 +18,9 @@ enum ShipmentStatusEnum: string
         return array_map(fn(self $enum) => $enum->value, self::cases());
     }
 
+    /**
+     * @return string
+     */
     public function getLabel(): string
     {
         return match($this) {
