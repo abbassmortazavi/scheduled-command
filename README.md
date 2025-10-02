@@ -44,4 +44,5 @@ docker exec -it php bash
    php artisan migrate
    php artisan db:seed
    php artisan schedule:work
+   if you want run command directly : php artisan shipments:update-statuses
 ```
