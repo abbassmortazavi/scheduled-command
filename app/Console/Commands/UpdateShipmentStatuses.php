@@ -6,6 +6,7 @@ use App\Enums\ShipmentStatusEnum;
 use App\Models\Shipment;
 use Exception;
 use Illuminate\Console\Command;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\Console\Command\Command as CommandAlias;
 
@@ -28,7 +29,7 @@ class UpdateShipmentStatuses extends Command
     /**
      * Execute the console command.
      */
-    public function handle()
+    public function handle(): int
     {
 
         $this->info('Starting shipment status update process...');
@@ -71,32 +72,21 @@ class UpdateShipmentStatuses extends Command
             $errorMessage = "Critical error in shipment status update: " . $e->getMessage();
             Log::error($errorMessage);
             $this->error($errorMessage);
-
             return CommandAlias::FAILURE;
         }
     }
 
+    /**
+     * @param string $trackingNumber
+     * @return string|null
+     */
     private function fetchStatusFromExternalApi(string $trackingNumber): ?string
     {
         try {
             sleep(1);
-
-            $statusOptions = [
-                'in_distribution_center',
-                'out_for_delivery',
-                'delivered',
-                'in_progress'
-            ];
-
-
-            $hash = crc32($trackingNumber) % 100;
-
-            if ($hash < 30) return 'in_distribution_center';
-            if ($hash < 60) return 'out_for_delivery';
-            if ($hash < 90) return 'delivered';
-
-            return 'in_progress';
-
+            $statuses = ShipmentStatusEnum::getValues();
+            $list = array_filter($statuses, fn($item) => $item !== ShipmentStatusEnum::IN_PROGRESS->value);
+            return $statuses[array_rand($list)];
         } catch (Exception $e) {
             Log::warning("External API call failed for tracking {$trackingNumber}: " . $e->getMessage());
             return null;
