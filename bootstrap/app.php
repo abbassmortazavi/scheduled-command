@@ -19,7 +19,7 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withSchedule(function (Schedule $schedule): void {
         $schedule->command('shipments:update-statuses')
-        ->everyFiveMinutes()
+        ->hourly()
         ->withoutOverlapping()
         ->appendOutputTo(storage_path('logs/shipment-update.log'));
     })

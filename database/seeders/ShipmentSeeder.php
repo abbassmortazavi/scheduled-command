@@ -7,6 +7,7 @@ use App\Models\Shipment;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Database\Seeder;
+use Random\RandomException;
 
 class ShipmentSeeder extends Seeder
 {
@@ -23,8 +24,8 @@ class ShipmentSeeder extends Seeder
 
         $shipments = [];
 
-        // Generate 50 sample shipments
-        for ($i = 0; $i < 50; $i++) {
+        // Generate 5000 sample shipments
+        for ($i = 0; $i < 5000; $i++) {
             $status = $this->getRandomStatus();
 
             $shipments[] = [
@@ -57,6 +58,7 @@ class ShipmentSeeder extends Seeder
 
     /**
      * Generate a unique tracking number
+     * @throws RandomException
      */
     private function generateTrackingNumber(): string
     {
@@ -68,17 +70,17 @@ class ShipmentSeeder extends Seeder
     }
 
     /**
-     * Get random status with weighted distribution
+     * @return string
      */
     private function getRandomStatus(): string
     {
         $weights = [
-            ShipmentStatusEnum::IN_PROGRESS->value => 30,           // 30%
-            ShipmentStatusEnum::IN_DISTRIBUTON_CENTER->value => 25, // 25%
-            ShipmentStatusEnum::OUT_FOR_DELIVERY->value => 20,      // 20%
-            ShipmentStatusEnum::DELIVERED->value => 15,             // 15%
-            ShipmentStatusEnum::FAILED->value => 5,                 // 5%
-            ShipmentStatusEnum::RETURNED->value => 5,               // 5%
+            ShipmentStatusEnum::IN_PROGRESS->value => 30,
+            ShipmentStatusEnum::IN_DISTRIBUTON_CENTER->value => 25,
+            ShipmentStatusEnum::OUT_FOR_DELIVERY->value => 20,
+            ShipmentStatusEnum::DELIVERED->value => 15,
+            ShipmentStatusEnum::FAILED->value => 5,
+            ShipmentStatusEnum::RETURNED->value => 5,
         ];
 
         $total = array_sum($weights);
@@ -96,11 +98,12 @@ class ShipmentSeeder extends Seeder
     }
 
     /**
-     * Generate appropriate last_status_check based on status
+     * @param string $status
+     * @return Carbon|null
      */
     private function getLastStatusCheckDate(string $status): ?Carbon
     {
-        return match($status) {
+        return match ($status) {
             ShipmentStatusEnum::IN_PROGRESS->value => now()->subHours(rand(1, 12)),
             ShipmentStatusEnum::OUT_FOR_DELIVERY->value => now()->subHours(rand(1, 6)),
             ShipmentStatusEnum::DELIVERED->value => now()->subDays(rand(1, 7)),
