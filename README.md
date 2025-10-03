@@ -46,3 +46,12 @@ docker exec -it php bash
    php artisan schedule:work
    if you want run command directly : php artisan shipments:update-statuses
 ```
+
+## Demo
+
+Watch the demo video here:
+https://www.awesomescreenshot.com/video/44882005?key=6e6589895f0cb8494050a42c63892eb4
+
+
+
+

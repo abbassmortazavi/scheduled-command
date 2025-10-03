@@ -29,11 +29,10 @@ class ShipmentService implements ShipmentServiceInterface
 
         Shipment::query()
             ->where('status', '=', ShipmentStatusEnum::IN_PROGRESS->value)
-            ->chunk(100, function ($shipments) use (&$updatedCount, &$errorCount) {
+            ->chunk(500, function ($shipments) use (&$updatedCount, &$errorCount) {
                 foreach ($shipments as $shipment) {
                     try {
                         $newStatus = $this->fetchStatusFromExternalApi($shipment->tracking_number);
-
                         if ($newStatus && $newStatus !== $shipment->status) {
                             $this->update($shipment, [
                                 'status' => $newStatus,

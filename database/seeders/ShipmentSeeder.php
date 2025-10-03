@@ -46,7 +46,7 @@ class ShipmentSeeder extends Seeder
         $this->command->info('50 shipments seeded successfully!');
         $this->command->info('Status distribution:');
 
-        $statusCounts = Shipment::groupBy('status')
+        $statusCounts = Shipment::query()->groupBy('status')
             ->selectRaw('status, count(*) as count')
             ->pluck('count', 'status')
             ->toArray();
